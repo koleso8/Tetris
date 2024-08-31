@@ -17,29 +17,56 @@ export default class Game {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
   activePieceX = 0;
   activePieceY = 0;
   activePiece = {
     x: 0,
     y: 0,
+    get blocks() {
+      return this.rotations[this.rotionIndex];
+    },
     blocks: [
       [0, 1, 0],
       [1, 1, 1],
       [0, 0, 0],
     ],
+
+    /*  rotionIndex: 0,
+    rotations: [
+      [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+      [
+        [0, 1, 0],
+        [0, 1, 1],
+        [0, 1, 0],
+      ],
+      [
+        [0, 0, 0],
+        [1, 1, 1],
+        [0, 1, 0],
+      ],
+      [
+        [0, 1, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+      ],
+    ], */
   };
 
   movePieceLeft() {
     this.activePiece.x -= 1;
 
-    if (this.isPieceOutOfBounds()) {
+    if (this.hasCollision()) {
       this.activePiece.x += 1;
     }
   }
@@ -47,7 +74,7 @@ export default class Game {
   movePieceRight() {
     this.activePiece.x += 1;
 
-    if (this.isPieceOutOfBounds()) {
+    if (this.hasCollision()) {
       this.activePiece.x -= 1;
     }
   }
@@ -55,24 +82,68 @@ export default class Game {
   movePieceDown() {
     this.activePiece.y += 1;
 
-    if (this.isPieceOutOfBounds()) {
+    if (this.hasCollision()) {
       this.activePiece.y -= 1;
       this.lockPiece();
     }
   }
 
-  isPieceOutOfBounds() {
+  rotatePiece() {
+    /*  this.activePiece.rotionIndex =
+      this.activePiece.rotionIndex < 3 ? this.activePiece.rotionIndex + 1 : 0;
+
+    if (this.hasCollision()) {
+      this.activePiece.rotionIndex =
+        this.activePiece.rotionIndex > 0 ? this.activePiece.rotionIndex - 1 : 3;
+    }
+    return this.activePiece.blocks;
+  */
+
+    this.rotateBlocks();
+
+    if (this.hasCollision()) {
+      this.rotateBlocks(false);
+    }
+  }
+
+  rotateBlocks(clocwise = true) {
+    const blocks = this.activePiece.blocks;
+    const length = blocks.length;
+    const x = Math.floor(length / 2);
+    const y = length - 1;
+
+    for (let i = 0; i < x; i++) {
+      for (let j = i; j < y - i; j++) {
+        const temp = blocks[i][j];
+
+        if (clocwise) {
+          blocks[i][j] = blocks[y - j][i];
+          blocks[y - j][i] = blocks[y - i][y - j];
+          blocks[y - i][y - j] = blocks[j][y - i];
+          blocks[j][y - i] = temp;
+        } else {
+          blocks[i][j] = blocks[j][y - i];
+          blocks[j][y - i] = blocks[y - i][y - j];
+          blocks[y - i][y - j] = blocks[y - j][i];
+          blocks[y - j][i] = temp;
+        }
+      }
+    }
+  }
+
+  hasCollision() {
     const { y: pieceY, x: pieceX, blocks } = this.activePiece;
 
     for (let y = 0; y < blocks.length; y++) {
       for (let x = 0; x < blocks[y].length; x++) {
         if (
-          this.playField[pieceY + y] === undefined ||
-          this.playField[pieceY + y][pieceX + x] === undefined
+          blocks[y][x] &&
+          (this.playField[pieceY + y] === undefined ||
+            this.playField[pieceY + y][pieceX + x] === undefined ||
+            this.playField[pieceY + y][pieceX + x])
         ) {
           return true;
         }
-        this.playField[pieceY + y][pieceX + x] = blocks[y][x];
       }
     }
 
@@ -84,7 +155,9 @@ export default class Game {
 
     for (let y = 0; y < blocks.length; y++) {
       for (let x = 0; x < blocks[y].length; x++) {
-        this.playField[pieceY + y][pieceX + x] = blocks[y][x];
+        if (blocks[y][x]) {
+          this.playField[pieceY + y][pieceX + x] = blocks[y][x];
+        }
       }
     }
   }
