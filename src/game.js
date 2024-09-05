@@ -6,13 +6,9 @@ export default class Game {
     4: 1200,
   };
 
-  score = 0;
-  lines = 0;
-  playField = this.createPlayField();
-  activePieceX = 0;
-  activePieceY = 0;
-  activePiece = this.createPiece();
-
+  constructor() {
+    this.reset();
+  }
   /*  rotionIndex: 0,
     rotations: [
       [
@@ -69,8 +65,20 @@ export default class Game {
       lines: this.lines,
       nextPiece: this.nextPiece,
       playField,
+      isGameOver: this.topOut,
     };
   }
+
+  reset() {
+    this.score = 0;
+    this.lines = 0;
+    this.topOut = false;
+    this.playField = this.createPlayField();
+    this.activePieceX = 0;
+    this.activePieceY = 0;
+    this.activePiece = this.createPiece();
+  }
+
   createPlayField() {
     const playField = [];
 
@@ -169,6 +177,8 @@ export default class Game {
   }
 
   movePieceDown() {
+    if (this.topOut) return;
+
     this.activePiece.y += 1;
 
     if (this.hasCollision()) {
@@ -177,6 +187,10 @@ export default class Game {
       const clearedLines = this.clearLines();
       this.updateScore(clearedLines);
       this.updatePieces();
+    }
+
+    if (this.hasCollision()) {
+      this.topOut = true;
     }
   }
 
