@@ -23,19 +23,48 @@ export default class View {
 
     this.element.appendChild(this.canvas);
   }
-  render({ playField }) {
+  render(state) {
     this.clearScreen();
-    this.renderPlayField(playField);
+    this.renderPlayField(state);
+    this, this.renderPanel(state);
   }
   clearScreen() {
     this.context.clearRect(0, 0, this.width, this.height);
   }
 
-  renderPlayField(playField) {
+  renderPlayField({ playField }) {
     for (let y = 0; y < playField.length; y++) {
       const line = playField[y];
       for (let x = 0; x < line.length; x++) {
         const block = line[x];
+        if (block) {
+          this.renderBlock(
+            x * this.blockWidth,
+            y * this.blockHeight,
+            this.blockWidth,
+            this.blockHeight,
+            View.colors[block]
+          );
+        }
+      }
+    }
+  }
+
+  renderPanel({ level, score, lines, nextPiece }) {
+    this.context.textAlign = 'start';
+    this.context.textBaseline = 'top';
+    this.context.fillStyle = 'white';
+    this.context.font = '14px "Press Start 2P"';
+
+    this.context.fillText(`Level: ${level}`, 0, 0);
+    this.context.fillText(`Score: ${score}`, 0, 24);
+    this.context.fillText(`Lines: ${lines}`, 0, 48);
+    this.context.fillText('Next:', 0, 96);
+
+    for (let y = 0; y < nextPiece.blocks.length; y++) {
+      for (let x = 0; x < nextPiece.blocks[y].length; x++) {
+        const block = nextPiece.blocks[y][x];
+
         if (block) {
           this.renderBlock(
             x * this.blockWidth,

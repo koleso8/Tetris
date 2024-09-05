@@ -7,7 +7,7 @@ export default class Game {
   };
 
   score = 0;
-  lines = 19;
+  lines = 0;
   playField = this.createPlayField();
   activePieceX = 0;
   activePieceY = 0;
@@ -63,7 +63,13 @@ export default class Game {
       }
     }
 
-    return { playField };
+    return {
+      score: this.score,
+      level: this.level,
+      lines: this.lines,
+      nextPiece: this.nextPiece,
+      playField,
+    };
   }
   createPlayField() {
     const playField = [];
