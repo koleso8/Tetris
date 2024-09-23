@@ -7,10 +7,6 @@ export default class Controller {
     document.addEventListener('keydown', this.handleKeydown.bind(this));
     document.addEventListener('keyup', this.handleKeyup.bind(this));
 
-    const pad = document.querySelector('.PAD');
-    pad.addEventListener('click', this.handlePadPress.bind(this));
-    pad.addEventListener('click', this.handlePadup.bind(this));
-
     this.view.renderStartScreen();
   }
 
@@ -63,54 +59,6 @@ export default class Controller {
     if (this.intervalID) {
       clearInterval(this.intervalID);
       this.intervalID = null;
-    }
-  }
-
-  handlePadPress(event) {
-    const state = this.game.getState();
-
-    if (event.target.value === undefined) return;
-    console.log(event.target.innerText);
-
-    switch (event.target.innerText) {
-      //!'START'
-      case 'Enter':
-        if (state.isGameOver) {
-          this.reset();
-        } else if (this.isPlaying) {
-          this.pause();
-        } else {
-          this.play();
-        }
-        break;
-      //!'ArrowLeft'
-      case 'B':
-        if (!this.isPlaying) return;
-        this.game.movePieceLeft();
-        this.updateView();
-        break;
-
-      //!ArrowUp'
-      case 'A':
-        if (!this.isPlaying) return;
-        this.game.rotatePiece();
-        this.updateView();
-        break;
-
-      //!'ArrowRight'
-      case 'C':
-        if (!this.isPlaying) return;
-        this.game.movePieceRight();
-        this.updateView();
-        break;
-
-      //!'ArrowDown'
-      case 'D':
-        if (!this.isPlaying) return;
-        this.stoptTimer();
-        this.game.movePieceDown();
-        this.updateView();
-        break;
     }
   }
 
