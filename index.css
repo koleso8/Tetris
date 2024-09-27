@@ -18,16 +18,7 @@ body {
 }
 
 .header {
-  background: rgb(255, 132, 0);
-  background: radial-gradient(
-    circle,
-    rgba(255, 132, 0, 1) 0%,
-    rgba(255, 246, 144, 1) 100%
-  );
   height: 40px;
-  width: 100vw;
-  display: inline-block;
-  margin-bottom: 8px;
 }
 
 .screen {
@@ -37,53 +28,12 @@ body {
 }
 
 canvas {
-  border: 4px solid rgb(0, 0, 0);
   margin: 0 auto;
-  background-color: black;
+  /* background-color: black; */
+  backdrop-filter: blur(100px);
   font-family: inherit;
   @media only screen and (min-width: 760px) {
     height: 90vh;
     width: auto;
   }
-}
-
-button {
-  margin: 0;
-  width: 60px;
-  height: 60px;
-  border-radius: 100%;
-  transition: linear 100ms;
-  &:active {
-    background-color: rgb(93, 103, 103);
-  }
-}
-
-.PAD {
-  list-style: none;
-  position: absolute;
-  bottom: 40px;
-  right: 40px;
-  margin: 0;
-  padding: 0;
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  @media only screen and (min-width: 760px) {
-    display: none;
-  }
-}
-.buttonPAD {
-  display: flex;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-}
-
-.icon {
-  z-index: 999;
-  fill: black;
-  stroke: black;
 }

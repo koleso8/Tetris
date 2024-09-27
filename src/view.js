@@ -41,7 +41,7 @@ export default class View {
   renderMainScreen(state) {
     this.clearScreen();
     this.renderPlayField(state);
-    this, this.renderPanel(state);
+    this.renderPanel(state);
   }
 
   renderStartScreen() {
